@@ -20,41 +20,42 @@ $(function () {
     }
   });
 
+  // The following function saves the user text in the time slot and saves it to the local storage.
 
+  var btns = $('.time-block button');
 
-  var btns =$('.time-block button');
+  function storeInfo() {
+    var btn = $(this);
 
-  function storeInfo(){
-    var btn =$(this);
-  
-    var textarea=btn.prev();
-    var parentDiv= btn.parent();
+    var textarea = btn.prev();
+    var parentDiv = btn.parent();
     var id = parentDiv.attr('id');
-    var textValue=textarea.val();
-    var toDoList=localStorage.getItem('toDoTask');
-    var toDoList=JSON.parse(localStorage.getItem('toDoTask')) || [];
-    toDoList.push ({
+    var textValue = textarea.val();
+    var taskList = {
+      hour: id,
+      storeList: textValue
+    };
+    var toDoList = JSON.parse(localStorage.getItem('toDoList')) || [];
+    toDoList.push({
       hour: id,
       storeList: textValue
     })
-localStorage.setItem('toDoTask', JSON.stringify(toDoTask));
+    localStorage.setItem('toDoList', JSON.stringify(toDoList));
 
   }
+  storeInfo()
   btns.click(storeInfo);
-  
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
 
-})
-// saveBtn.addEventListener('click', saveInfo)
+});
 
+// The following function populates the text area with the values stored in the local area by the user.
+function populate() {
+  var storedData = JSON.parse(localStorage.getItem('toDoList')) || [];
+  storedData.forEach(function (item) {
+    var hour = item.hour;
+    var storeList = item.storeList;
+    $('#' + hour).find('textarea').val(storeList);
+  });
+
+}
+populate();
